@@ -1,10 +1,9 @@
 pipeline {
-    agent {
-        }
-    }
     stages {
-        stage('SCM Checkout') { 
-            steps {
+        stage('SCM Checkout') 
+        { 
+            steps 
+            {
                 sh 'echo "hi" ' 
             }
         }
