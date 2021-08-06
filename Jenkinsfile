@@ -27,5 +27,13 @@ pipeline {
                 }
             }
         }
+        stage('Sonar-Test')
+        {
+            def mvnHome = tool name: 'Maven3.6', type: 'maven'
+            withSonarQubeEnv('Sonar_server')
+            {
+                sh "${mvnHome}/bin/mvn sonar:sonar"
+            }
+        }
     }
 }
