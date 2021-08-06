@@ -11,14 +11,17 @@ pipeline {
                 }
             }
         }
-        stage('Test') {
-            steps {
-                scripts{
+        stage('Test') 
+        {
+            steps 
+            {
+                script{
                     def mvnHome = tool name: 'Maven3.6', type: 'maven'
                     sh "${mvnHome}/bin/mvn test"
                 }
             }
-            post {
+            post 
+            {
                 always {
                     junit 'target/surefire-reports/*.xml'
                 }
