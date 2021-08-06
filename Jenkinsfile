@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('SCM Checkout') 
+        stage('SCM Checkouts') 
         { 
             steps 
             {
