@@ -43,7 +43,7 @@ pipeline {
         }
         stage("Quality gate") {
             steps {
-                waitForQualityGate(webhookSecretId: '685fd794-624c-46f1-b0dc-3be692ea0f31')  abortPipeline: true
+                waitForQualityGate abortPipeline: true
             }
         }
     }
