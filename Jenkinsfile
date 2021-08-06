@@ -5,8 +5,10 @@ pipeline {
         { 
             steps 
             {
-                def mvnHome = tool name: 'Maven3.6', type: 'maven'
-                sh "${mvnHome}/bin/mvn -B -DskipTests clean package"
+                script{
+                    def mvnHome = tool name: 'Maven3.6', type: 'maven'
+                    sh "${mvnHome}/bin/mvn -B -DskipTests clean package"
+                }
             }
         }
     }
