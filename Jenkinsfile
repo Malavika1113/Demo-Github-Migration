@@ -57,6 +57,25 @@ pipeline {
                 }
             }
         }
+        stage("Nexus Upload"){
+            steps{
+                nexusArtifactUploader artifacts: [
+                    [
+                        artifactId: 'my-app', 
+                        classifier: '', 
+                        file: 'target/my-app-1.0.0.jar',
+                        type: 'jar'
+                    ]
+                ], 
+                    credentialsId: 'nexus-ids', 
+                    groupId: 'com.mycompany.app', 
+                    nexusUrl: '10.128.15.210:8085', 
+                    nexusVersion: 'nexus3', 
+                    protocol: 'http', 
+                    repository: 'simpleapp-release', 
+                    version: '1.0.0'
+            }
+        }
     }
 }
 
