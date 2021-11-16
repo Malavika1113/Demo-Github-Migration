@@ -57,7 +57,7 @@ jobs:
           echo Starting Fortify stage!!
           sleep 15
   Upload:
-    if: ${{ github.event.inputs.Release_Check == 'Yes'}}
+    if: ${{ github.event.inputs.Release_Check }}
     needs: [Build-Sonar,Fortify]
     runs-on: ubuntu-latest
     steps:      
