@@ -15,8 +15,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Check-out Templates
-        run: echo checking out templates!!
-        
+        run: |
+          echo checking out templates!!
+          sleep 3
       - name: Pre-Release Task
         run: echo updating Version Repo!!
         
@@ -24,46 +25,54 @@ jobs:
         run: echo setting release version!!
         
       - name: Pre-Build
-        run: echo Executing Pre build steps!!
-        
+        run: |
+          echo Executing Pre build steps!!
+          sleep 5
       - name: Build and Security Test
-        run: echo Build and security testing!!
-        
+        run: |
+          echo Build and security testing!!
+          sleep 5
       - name: Build and Sonar Analysis
-        run: echo Starting Build+Sonar!!
-  
+        run: |
+          echo Starting Build+Sonar!!
+          sleep 5
   Build-Sonar:
     needs: Pre-Release
     runs-on: ubuntu-latest
     steps:
       - name: Build
-        run: echo Build Starts here!!
-        
+        run: |
+          echo Build Starts here!!
+          sleep 10
       - name: Sonar Analysis
-        run: echo Sonar Starts here!!
-       
+        run: |
+          echo Sonar Starts here!!
+          sleep 10
   Fortify:
     needs: Pre-Release
     runs-on: ubuntu-latest
     steps:    
       - name: Fortify Analysis
-        run: echo Starting Fortify stage!!
-        
+        run: |
+          echo Starting Fortify stage!!
+          sleep 15
   Upload:
     if: ${{ github.event.inputs.Release_Check == 'Yes'}}
     needs: [Build-Sonar,Fortify]
     runs-on: ubuntu-latest
     steps:      
       - name: Upload to Nexus
-        run: echo Uploading Artifacts to Nexus!!
-        
+        run: |
+          echo Uploading Artifacts to Nexus!!
+          sleep 10
   Post-Release:
     needs: [Upload]
     runs-on: ubuntu-latest
     steps:    
       - name: Post Release Task
-        run: echo Update Versioning Repo!!
-        
+        run: |
+          echo Update Versioning Repo!!
+          sleep 10
   Declarative-Post-Actions:
     needs: [Post-Release]
     runs-on: ubuntu-latest
