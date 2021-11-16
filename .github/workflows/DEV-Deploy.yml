@@ -1,0 +1,55 @@
+name: DEV DEPLOY
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: REL_Version
+        required: true
+jobs:
+  Download-Artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Version Number
+        run: echo "REL_VERSION = ${{ github.event.inputs.version }}"
+
+      - name: Download Artifact
+        run: |
+          echo "Downloading ${{ github.event.inputs.version }} from Nexus"
+          
+  Deploy-StoreFront1:
+    needs: Download-Artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Node1
+        run: echo "Deployment Succeeded!!"
+        
+  Deploy-StoreFront2:
+    needs: Download-Artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Node2
+        run: echo "Deployment Succeeded!!"
+        
+  Deploy-BackOffice1:
+    needs: Download-Artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Node3
+        run: echo "Deployment Succeeded!!"
+  
+  Deploy-BackOffice2:
+    needs: Download-Artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Node4
+        run: echo "Deployment Succeeded!!"
+        
+  Post-Deployment-Steps:
+    needs: [Deploy-StoreFront1,Deploy-StoreFront2,Deploy-BackOffice1,Deploy-BackOffice2]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sent Mails
+        run: echo "Mailing Succeeded!!"
