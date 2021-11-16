@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       Release_Check:
+        type: boolean
         description: Release this Build
-        default: 'No'
         required: true
 
 jobs:
