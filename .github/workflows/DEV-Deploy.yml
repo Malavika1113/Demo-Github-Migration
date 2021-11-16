@@ -19,43 +19,56 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Version Number
-        run: echo "REL_VERSION = ${{ github.event.inputs.version }}"
+        run: |
+          echo "REL_VERSION = ${{ github.event.inputs.version }}"
+          sleep 5
 
       - name: Download Artifact
         run: |
           echo "Downloading ${{ github.event.inputs.version }} from Nexus"
+          sleep 10
           
   Deploy-StoreFront1:
     needs: Download-Artifact
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Node1
-        run: echo "Deployment Succeeded!!"
+        run: |
+          echo "Deployment Succeeded!!"
+          sleep 10
         
   Deploy-StoreFront2:
     needs: Download-Artifact
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Node2
-        run: echo "Deployment Succeeded!!"
+        run: |
+          echo "Deployment Succeeded!!"
+          sleep 10
         
   Deploy-BackOffice1:
     needs: Download-Artifact
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Node3
-        run: echo "Deployment Succeeded!!"
+        run: |
+          echo "Deployment Succeeded!!"
+          sleep 10
   
   Deploy-BackOffice2:
     needs: Download-Artifact
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Node4
-        run: echo "Deployment Succeeded!!"
+        run: |
+          echo "Deployment Succeeded!!"
+          sleep 10
         
   Post-Deployment-Steps:
     needs: [Deploy-StoreFront1,Deploy-StoreFront2,Deploy-BackOffice1,Deploy-BackOffice2]
     runs-on: ubuntu-latest
     steps:
       - name: Sent Mails
-        run: echo "Mailing Succeeded!!"
+        run: |
+          echo "Mailing Succeeded!!"
+          sleep 5
