@@ -4,7 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
+        type: choice
         description: REL_Version
+        options:
+        - 1.0.0
+        - 1.0.1
+        - 2.0.0
+        - 3.0.0
         required: true
 jobs:
   Download-Artifact:
