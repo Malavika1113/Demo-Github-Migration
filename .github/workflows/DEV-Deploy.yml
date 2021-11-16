@@ -18,6 +18,7 @@ jobs:
       - name: Download Artifact
         run: |
           echo "Downloading ${{ github.event.inputs.version }} from Nexus"
+          sleep 5
           
   Deploy-StoreFront1:
     needs: Download-Artifact
