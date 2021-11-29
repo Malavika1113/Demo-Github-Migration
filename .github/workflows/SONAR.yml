@@ -1,9 +1,9 @@
 name: SONAR
 
 on:
-  push:
-    branches:
-      - develop
+  #push:
+    #branches:
+      #- develop
   pull_request:
     types: [opened, synchronize, reopened]
 
