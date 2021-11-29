@@ -1,9 +1,6 @@
 name: BUILDS
 
 on:
-  #push:
-    #branches:
-      #- develop
   workflow_dispatch:
     inputs:
       Release_Check:
@@ -29,12 +26,15 @@ jobs:
       - name: Pre-Build
         run: |
           echo Executing Pre build steps!!
+          sleep 5
       - name: Build and Security Test
         run: |
           echo Build and security testing!!
+          sleep 5
       - name: Build and Sonar Analysis
         run: |
           echo Starting Build+Sonar!!
+          sleep 3
   Build-Sonar:
     needs: Pre-Release
     runs-on: ubuntu-latest
@@ -42,9 +42,11 @@ jobs:
       - name: Build
         run: |
           echo Build starts here!!
+          sleep 5
       - name: Sonar Analysis
         run: |
           echo Sonar Starts here!!
+          sleep 5
   Fortify:
     needs: Pre-Release
     runs-on: ubuntu-latest
@@ -52,6 +54,7 @@ jobs:
       - name: Fortify Analysis
         run: |
           echo Starting Fortify stage!!
+          sleep 15
   Upload:
     if: ${{ github.event.inputs.Release_Check }}
     needs: [Build-Sonar,Fortify]
@@ -60,6 +63,7 @@ jobs:
       - name: Upload to Nexus
         run: |
           echo Uploading Artifacts to Nexus!!
+          sleep 5
   Post-Release:
     needs: [Upload]
     runs-on: ubuntu-latest
@@ -67,6 +71,7 @@ jobs:
       - name: Post Release Task
         run: |
           echo Update Versioning Repo!!
+          sleep 5
   Declarative-Post-Actions:
     needs: [Post-Release]
     runs-on: ubuntu-latest
