@@ -1,44 +1,14 @@
-name: BUILD
+name: SONAR
 
 on:
-  workflow_dispatch:
-    inputs:
-      Release_Check:
-        type: boolean
-        description: Release this Build
-        required: true
+  #push:
+    #branches:
+      #- develop
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  Pre-Release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Check-out Templates
-        run: |
-          echo checking out templates!!
-      - name: Pre-Release Task
-        run: echo updating Version Repo!!
-        
-      - name: Set Release Version
-        run: echo setting release version!!
-        
-      - name: Pre-Build
-        run: |
-          echo Executing Pre build steps!!
-
-      - name: Build and Security Test
-        run: |
-          echo Build and security testing!!
-
-      - name: Build and Sonar Analysis
-        run: |
-          echo Starting Build+Sonar!!
-
-  Build-Sonar:
-    needs: Pre-Release
+  Sonar-Check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -66,38 +36,3 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-      - name: Sonar Analysis
-        run: |
-          echo Sonar Starts here!!
-
-  Fortify:
-    needs: Pre-Release
-    runs-on: ubuntu-latest
-    steps:    
-      - name: Fortify Analysis
-        run: |
-          echo Starting Fortify stage!!
-
-  Upload:
-    if: ${{ github.event.inputs.Release_Check }}
-    needs: [Build-Sonar,Fortify]
-    runs-on: ubuntu-latest
-    steps:      
-      - name: Upload to Nexus
-        run: |
-          echo Uploading Artifacts to Nexus!!
-
-  Post-Release:
-    needs: [Upload]
-    runs-on: ubuntu-latest
-    steps:    
-      - name: Post Release Task
-        run: |
-          echo Update Versioning Repo!!
-
-  Declarative-Post-Actions:
-    needs: [Post-Release]
-    runs-on: ubuntu-latest
-    steps:    
-      - name: Sent Results
-        run: echo Mailing results to recipients!!
