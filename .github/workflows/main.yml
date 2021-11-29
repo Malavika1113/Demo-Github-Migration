@@ -1,38 +1,80 @@
-name: SONAR
+name: CODE-BUILD
 
 on:
-  #push:
-    #branches:
-      #- develop
-  pull_request:
-    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      Release_Check:
+        type: boolean
+        description: Release this Build
+        required: true
 
 jobs:
-  Sonar-Check:
+  Pre-Release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Cache SonarQube packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Maven packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+
+      - name: Check-out Templates
+        run: |
+          echo checking out templates!!
+      - name: Pre-Release Task
+        run: echo updating Version Repo!!
+        
+      - name: Set Release Version
+        run: echo setting release version!!
+        
+      - name: Pre-Build
+        run: |
+          echo Executing Pre build steps!!
+          sleep 5
+      - name: Build and Security Test
+        run: |
+          echo Build and security testing!!
+          sleep 5
+      - name: Build and Sonar Analysis
+        run: |
+          echo Starting Build+Sonar!!
+          sleep 3
+  Build-Sonar:
+    needs: Pre-Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: |
+          echo Build starts here!!
+          sleep 5
+      - name: Sonar Analysis
+        run: |
+          echo Sonar Starts here!!
+          sleep 5
+  Fortify:
+    needs: Pre-Release
+    runs-on: ubuntu-latest
+    steps:    
+      - name: Fortify Analysis
+        run: |
+          echo Starting Fortify stage!!
+          sleep 15
+  Upload:
+    if: ${{ github.event.inputs.Release_Check }}
+    needs: [Build-Sonar,Fortify]
+    runs-on: ubuntu-latest
+    steps:      
+      - name: Upload to Nexus
+        run: |
+          echo Uploading Artifacts to Nexus!!
+          sleep 5
+  Post-Release:
+    needs: [Upload]
+    runs-on: ubuntu-latest
+    steps:    
+      - name: Post Release Task
+        run: |
+          echo Update Versioning Repo!!
+          sleep 5
+  Declarative-Post-Actions:
+    needs: [Post-Release]
+    runs-on: ubuntu-latest
+    steps:    
+      - name: Sent Results
+        run: echo Mailing results to recipients!!
