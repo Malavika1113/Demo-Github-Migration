@@ -1,4 +1,4 @@
-name: BUILD
+name: BUILDS
 
 on:
   workflow_dispatch:
@@ -36,7 +36,7 @@ jobs:
     needs: Pre-Release
     runs-on: ubuntu-latest
     steps:
-	  - name: Build
+      - name: Build
         run: |
           echo Build starts here!!
       - name: Sonar Analysis
