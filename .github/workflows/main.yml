@@ -1,9 +1,6 @@
 name: BUILD
 
 on:
-  push:
-    branches:
-      - develop
   workflow_dispatch:
     inputs:
       Release_Check:
