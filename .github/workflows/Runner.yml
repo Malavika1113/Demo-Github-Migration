@@ -27,7 +27,7 @@ jobs:
     #needs: Sleep-ec2
     runs-on: ubuntu-latest
     env:
-      checkstatus: running
+      checkstatus: ''
     steps:
       - name: Checking status of EC2
         id: statusCheck
