@@ -24,7 +24,7 @@ jobs:
           sleep 60
           
   Check-ec2-Status:
-    #needs: Sleep-ec2
+    needs: Sleep-ec2
     runs-on: ubuntu-latest
     env:
       checkstatus: ''
