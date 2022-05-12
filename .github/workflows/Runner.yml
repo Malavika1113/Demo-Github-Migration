@@ -44,7 +44,7 @@ jobs:
           echo "Hello world"
           
   Stop-aws-ec2:
-    needs: Check-ec2-Status
+    needs: Build
     runs-on: ubuntu-latest
     steps:
       - name: Stop EC2
