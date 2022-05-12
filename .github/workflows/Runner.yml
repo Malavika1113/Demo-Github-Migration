@@ -32,12 +32,11 @@ jobs:
       - name: Checking status of EC2
         id: statusCheck
         run: |
-          status="$( aws ec2 describe-instance-status --instance-id ${{secrets.AWS_EC2_INSTANCE_ID }} | jq -r '.InstanceStatuses[] | .InstanceState | .Name' )"
+          status=$( aws ec2 describe-instance-status --instance-id ${{secrets.AWS_EC2_INSTANCE_ID }} | jq -r '.InstanceStatuses[] | .InstanceState | .Name' )
           echo "Status=$status"
           echo '::set-output name=SELECTED_COLOR::$status'
-          id: sc
       - name: status
-        run: echo "The selected color is ${{ steps.sc.outputs.SELECTED_COLOR }}"
+        run: echo "The selected color is ${{ steps.statusCheck.outputs.SELECTED_COLOR }}"
   
   Build:
     needs: Check-ec2-Status
