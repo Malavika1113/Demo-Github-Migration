@@ -31,9 +31,7 @@ jobs:
         id: statusCheck
         run: |
           status=$( aws ec2 describe-instance-status --instance-id ${{secrets.AWS_EC2_INSTANCE_ID }} | jq -r '.InstanceStatuses[] | .InstanceState | .Name' )
-          if [ "$status" != "running" ];then
-            exit 1
-          fi
+          echo $status
    
 #   Build:
 #     needs: Check-ec2-Status
