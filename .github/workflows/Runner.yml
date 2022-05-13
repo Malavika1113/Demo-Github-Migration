@@ -2,55 +2,87 @@ name: GitHub Runner
 
 on: 
   workflow_dispatch:
+  
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
 
 jobs:
-#   Start-aws-ec2:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Start EC2
-#         run: |
-#           aws ec2 start-instances --instance-ids ${{secrets.AWS_EC2_INSTANCE_ID }} 
-#         env:
-#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-          
-#   Sleep-ec2:
-#     needs: Start-aws-ec2
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Waiting EC2 to Start
-#         run: |
-#           sleep 60
-          
   Check-ec2-Status:
-    #needs: Sleep-ec2
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.step1.outputs.STATUS1 }}
+      output2: ${{ steps.step2.outputs.STATUS2 }}
+      output3: ${{ steps.step3.outputs.STATUS3 }}
+    
     steps:
-      - name: Checking status of EC2
-        id: statusCheck
+      - id: step1
         run: |
           status1=$( aws ec2 describe-instance-status --instance-id ${{secrets.AWS_EC2_INSTANCE_ID }} | jq -r '.InstanceStatuses[] | .InstanceState | .Name' )
-          echo "STATUS1=$status1"
+          echo "::set-output name=STATUS1::$status1"
+            
+      - id: step2
+        run: |
+          status2=$( aws ec2 describe-instance-status --instance-id ${{secrets.AWS_EC2_INSTANCE_ID2 }} | jq -r '.InstanceStatuses[] | .InstanceState | .Name' )
+          echo "::set-output name=STATUS2::$status2"
+        
+      - id: step3
+        run: |
+          status3=$( aws ec2 describe-instance-status --instance-id ${{secrets.AWS_EC2_INSTANCE_ID3 }} | jq -r '.InstanceStatuses[] | .InstanceState | .Name' )
+          echo "::set-output name=STATUS3::$status3"  
+           
+  startawsec2:
+    needs: Check-ec2-Status
+    runs-on: ubuntu-latest
+    steps:
+      - name: isrunner1running
+        if: ${{needs.Check-ec2-Status.outputs.output1 == 'running'}}
+        run: |
+          echo "Moving to next"
+      - name: isrunner1stopped     
+        if: ${{needs.Check-ec2-Status.outputs.output1 != 'running'}}
+        run: |         
+          aws ec2 start-instances --instance-ids ${{secrets.AWS_EC2_INSTANCE_ID }}
+         
           
-#   Build:
-#     needs: Check-ec2-Status
-#     runs-on: self-hosted
-#     steps:
-#       - name: Build ECOMM
-#         run: |
-#           echo "Hello world"
+      - name: isrunner2running
+        if: ${{needs.Check-ec2-Status.outputs.output2 == 'running'}}
+        run: |
+          echo "Moving to next"
+      - name: isrunner2stopped     
+        if: ${{needs.Check-ec2-Status.outputs.output2 != 'running' && needs.Check-ec2-Status.outputs.output1 == 'running'}}
+        run: |         
+          aws ec2 start-instances --instance-ids ${{secrets.AWS_EC2_INSTANCE_ID2 }}
+    
           
-#   Stop-aws-ec2:
-#     needs: Build
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Stop EC2
-#         run: |
-#           aws ec2 stop-instances --instance-ids ${{secrets.AWS_EC2_INSTANCE_ID }}
-#         env:
-#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+      - name: isrunner3running
+        if: ${{needs.Check-ec2-Status.outputs.output2 == 'running'}}
+        run: |
+          echo "Moving to next"
+      - name: isrunner3stopped     
+        if: ${{needs.Check-ec2-Status.outputs.output3 != 'running' && needs.Check-ec2-Status.outputs.output2 == 'running' && needs.Check-ec2-Status.outputs.output1 == 'running'}}
+        run: |         
+          aws ec2 start-instances --instance-ids ${{secrets.AWS_EC2_INSTANCE_ID3 }}
+               
+  sleep-ec2:
+    needs: startawsec2
+    runs-on: ubuntu-latest
+    steps:
+      - name: waiting ec2 to start
+        run: |
+          sleep 60
+               
+#  stopawsec2:
+#    needs: checkec2status
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: stopec2
+#        run: |
+#          aws ec2 stop-instances --instance-ids ${{secrets.AWS_EC2_INSTANCE_ID }}
+#        env:
+#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}  
           
           
